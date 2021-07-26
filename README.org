@@ -1,0 +1,58 @@
+#+TITLE: HSL Server Configuration
+
+WIP: as of time of writing, these scripts do not fully work.
+
+Please read this entire document before ssh'ing to the HSL server, creating a new VM, or attempting any
+other manner of funny business!
+
+* Introduction
+  Using this repository, you can modify the setup of the HSL server, or create a new one from
+  scratch! Because most services running on the server are in virtual machines (this makes it easy
+  for members to maintain their own services without having to know how the heck this repository
+  works), the setup process isn't as automated as it could be. If you run these scripts on a brand
+  new machine, it will install all requisite software using ~apt~ and will define the necessary
+  virtual machines, and arrange for those VMs to be started on host boot. It will setup everything
+  non-VM-related, including Wireguard, iptables rules, and SSH access. /You/ must do the following
+  after running these scripts:
+  1. Copy the VM disk images into ~/var/lib/libvirt/images~
+  2. Start up the VMs, using ~virt-manager~ or by running ~virsh start <vm-name>~ for each VM
+    (~wiki~, ~partdb~, etc according to ~virsh list~).
+* How do I run it?
+  Make sure that the ~m4~ command is found on your local Linux machine. Have handy the 
+  ~vars.sh~ script given you by the previous IT manager. Open up a shell and run:
+
+  #+BEGIN_SRC sh
+    source vars.sh
+    export REMOTELY_HOST=root@server-ip.com
+    ./go.sh
+  #+END_SRC
+
+  The ~REMOTELY_HOST~ must be root and an IP address for the machine that you can access from your
+  current machine's network connection (behind NAT is ok, just make sure you can access it during
+  setup)
+* What's this remotely thingamagig?
+  It's a script I wrote a while back to setup [[https://github.com/markasoftware/swirl][my own
+  server]]. It's a toolkit for writing shell scripts that involve lots of commands executed on a
+  remote machine, uploading files to a remote machine, and templating for said files. It's a
+  convenient alternative to big, enterprise-grade tools like Ansible or Puppet when you don't need
+  as many """features""".
+
+  Briefly, every line starting with ~remotely~ executes on the server. Each ~upload~ line uses
+  ~rsync~ to upload the corresponding files and folders inside of the local ~files/~ folder to the
+  root of the remote machine. Extra ~rsync~ options may be provided to ~upload~ to handle file
+  attributes such as permissions. Finally, any files in ~files/~ whose name ends in ~.m4~ are sent
+  through the [[https://www.gnu.org/software/m4/manual/m4.html][M4 Macro Processor]] and then
+  renamed to remove the ~.m4~. This allows all sorts of templating, but perhaps most usefully,
+  environment variables can be spliced into files using the macros ~m4_getenv~ and ~m4_getenv_req~
+  (the latter throws an error if the environment variable is empty/undefined).
+* How do I create a new virtual machine?
+  1. Create the VM on the server using your preferred method, which for me is ~virt-manager~, but
+     for you may be plain ~virsh~ if you're hardcore.
+  2. Run ~virsh dumpxml vm-name > vm-name.xml~ to create the XML dump. Remove any parts that seem
+     overly specific to the server hardware (eg, a ~<cpu>~ section, the id number at the top),
+     parametrize at least the MAC address using ~m4_getenv_req~, then copy to
+     ~files/etc/libvirt-custom/vm-name-machine.xml.m4~
+  3. Edit ~go-virt.sh~ to include your new VM, in the same style as the existing VMs.
+  4. Edit ~files/etc/libvirt-custom/default-network.xml.m4~ to include an IP for the VM.
+  5. Edit ~files/etc/iptables/rules.v4~ to forward ports to the VM's IP.
+  6. Run ~./go.sh~ to update the network configuration.
