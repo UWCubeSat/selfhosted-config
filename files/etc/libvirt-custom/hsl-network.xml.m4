@@ -1,12 +1,12 @@
 <network>
-  <name>default</name>
+  <name>hsl</name>
   <uuid>682116bf-a413-4d78-b0f5-46c5fb43ddd3</uuid>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>
     </nat>
   </forward>
-  <bridge name='virbr0' stp='on' delay='0'/>
+  <bridge name='hslbr0' stp='on' delay='0'/>
   <mac address='52:54:00:32:7d:d5'/>
   <ip address='m4_getenv_req(VIRT_BASE_IP).1' netmask='255.255.255.0'>
     <dhcp>

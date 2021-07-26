@@ -10,7 +10,7 @@ upload /etc/iptables
 
 upload /etc/systemd/system/iptables-custom.service
 upload /etc/sysctl.d/69-ipv4-forward.conf
-remotel sysctl --system
+remotely sysctl --system
 
 remotely systemctl daemon-reload
 remotely systemctl reload wg-quick@wg0 || true

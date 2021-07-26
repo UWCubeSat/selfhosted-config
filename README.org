@@ -47,12 +47,22 @@ other manner of funny business!
   (the latter throws an error if the environment variable is empty/undefined).
 * How do I create a new virtual machine?
   1. Create the VM on the server using your preferred method, which for me is ~virt-manager~, but
-     for you may be plain ~virsh~ if you're hardcore.
-  2. Run ~virsh dumpxml vm-name > vm-name.xml~ to create the XML dump. Remove any parts that seem
-     overly specific to the server hardware (eg, a ~<cpu>~ section, the id number at the top),
-     parametrize at least the MAC address using ~m4_getenv_req~, then copy to
-     ~files/etc/libvirt-custom/vm-name-machine.xml.m4~
+     for you may be plain ~virsh~ if you're hardcore. Whichever method you choose, /make sure to
+     select the ~hsl~ network/, not the ~default~ network nor a bridge.
+  2. Run ~virsh dumpxml vm-name > vm-name.xml~ to create the XML dump. Remove parts that seem
+     overly specific to the server hardware. Things I do in particular include:
+     + Removing the ~<cpu>~ section.
+     + Remove the ~id~ attribute at the very top.
+     + Remove the ~<target>~ section from the ~network~ device.
+     + Remove the ~bridge~ attribute from the ~<source>~ section of the ~network~ device.
+     + Parametrize the MAC address using ~m4_getenv_req~
+
+     Then, copy to ~files/etc/libvirt-custom/vm-name-machine.xml.m4~
   3. Edit ~go-virt.sh~ to include your new VM, in the same style as the existing VMs.
   4. Edit ~files/etc/libvirt-custom/default-network.xml.m4~ to include an IP for the VM.
   5. Edit ~files/etc/iptables/rules.v4~ to forward ports to the VM's IP.
   6. Run ~./go.sh~ to update the network configuration.
+* Tips
+  When copying a qcow2 virtual machine image over the network, use ~--sparse~ on ~rsync~ to make it
+  way faster. I recommend: ~rsync -tz --sparse --progress
+  root@blah.com:/var/lib/libvirt/images/whatever.qcow2 /var/lib/libvirt/images/whatever.qcow2~
