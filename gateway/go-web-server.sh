@@ -1,10 +1,15 @@
 #!/bin/bash
 
+echo
+echo 'STARTING web server'
+echo
+
 source remotely.sh
 remotely_go
 
 env_req LETSENCRYPT_EMAIL
-env_req LETSENCRYPT_DOMAINS
+env_req DOMAIN_CURRENT
+env_req DOMAINS_OLD
 
 remotely apt-get install -y rsync nginx certbot
 
@@ -17,11 +22,11 @@ remotely systemctl stop nginx
 remotely make -C /build/letsencrypt \
 	 "LETSENCRYPT_CERT_NAME=hsl" \
 	 "LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL" \
-	 "LETSENCRYPT_DOMAINS=$LETSENCRYPT_DOMAINS"
+	 "LETSENCRYPT_DOMAINS=$DOMAIN_CURRENT $DOMAINS_OLD"
 
 remotely systemctl start nginx
 remotely systemctl enable nginx
 
 echo
-echo 'DONE with Web Server'
+echo 'DONE with web server'
 echo

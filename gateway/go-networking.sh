@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo
+echo 'STARTING networking'
+echo
+
 source remotely.sh
 remotely_go
 

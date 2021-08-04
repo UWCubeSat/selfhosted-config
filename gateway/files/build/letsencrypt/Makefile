@@ -6,6 +6,6 @@ all: $(domain_certs)
 
 $(base_path)/%:
 	certbot certonly --non-interactive --agree-tos --standalone \
-		--cert-name $(LETSENCRYPT_CERT_NAME)
+		--cert-name $(LETSENCRYPT_CERT_NAME) \
 		-m '$(LETSENCRYPT_EMAIL)' \
 		-d $*

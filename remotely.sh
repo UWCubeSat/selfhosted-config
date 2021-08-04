@@ -28,7 +28,7 @@ function ez_rsync_up {
     local remote_path=$2
     shift 2
     # CUSTOMIZE: Rsync upload default options
-    rsync -Rrtp --info=progress2 "$@" "$local_path" "$REMOTELY_HOST:$remote_path"
+    rsync -Rrtp --exclude='*.m4' --exclude '*~' --info=progress2 "$@" "$local_path" "$REMOTELY_HOST:$remote_path"
 }
 
 # args: rsync args. This function exists only for customization

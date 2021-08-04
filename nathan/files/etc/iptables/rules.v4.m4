@@ -4,15 +4,15 @@
 :OUTPUT ACCEPT [0:0]
 
 # Outgoing DNS from VMs, I guess? This may not be necessary
--A INPUT -i hslbr0 -p udp -m udp --dport 53 -j ACCEPT
--A INPUT -i hslbr0 -p tcp -m tcp --dport 53 -j ACCEPT
+-A INPUT -i hslbr -p udp -m udp --dport 53 -j ACCEPT
+-A INPUT -i hslbr -p tcp -m tcp --dport 53 -j ACCEPT
 
 # I'm not totally sure if these lines are necessary; perhaps used by libvirt for VM DHCP?
 # TODO: one day use a more unique name for the interface to lessen chance of it being wrong
--A INPUT -i hslbr0 -p udp -m udp --dport 67 -j ACCEPT
--A INPUT -i hslbr0 -p tcp -m tcp --dport 67 -j ACCEPT
--A OUTPUT -o hslbr0 -p udp -m udp --dport 68 -j ACCEPT
--A OUTPUT -o hslbr0 -p udp -m udp --dport 68 -j ACCEPT
+-A INPUT -i hslbr -p udp -m udp --dport 67 -j ACCEPT
+-A INPUT -i hslbr -p tcp -m tcp --dport 67 -j ACCEPT
+-A OUTPUT -o hslbr -p udp -m udp --dport 68 -j ACCEPT
+-A OUTPUT -o hslbr -p udp -m udp --dport 68 -j ACCEPT
 
 -A INPUT -p icmp -m icmp --icmp-type 3 -j ACCEPT
 -A INPUT -p icmp -m icmp --icmp-type 11 -j ACCEPT
@@ -67,7 +67,7 @@ COMMIT
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 # No idea what's going on here
--A POSTROUTING -o hslbr0 -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
+-A POSTROUTING -o hslbr -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
 COMMIT
 
 *raw

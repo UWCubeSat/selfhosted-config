@@ -28,15 +28,15 @@ COMMIT
 :OUTPUT ACCEPT [0:0]
 
 # SSH to the server itself
--A PREROUTING -p tcp --dport m4_env_req(PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_SERVER_IP):22
+-A PREROUTING -p tcp --dport m4_getenv_req(NATHAN_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_NATHAN_IP):22
 # Miiiinecraft
--A PREROUTING -p tcp --dport 25565 -j DNAT --to-destination m4_getenv_req(WIREGUARD_SERVER_IP)
+-A PREROUTING -p tcp --dport 25565 -j DNAT --to-destination m4_getenv_req(WIREGUARD_NATHAN_IP)
 
 # VM SSHs
--A PREROUTING -p tcp --dport m4_getenv_req(KAVEL_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_SERVER_IP)
--A PREROUTING -p tcp --dport m4_getenv_req(WIKI_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_SERVER_IP)
--A PREROUTING -p tcp --dport m4_getenv_req(PARTDB_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_SERVER_IP)
+-A PREROUTING -p tcp --dport m4_getenv_req(KAVEL_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_NATHAN_IP)
+-A PREROUTING -p tcp --dport m4_getenv_req(WIKI_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_NATHAN_IP)
+-A PREROUTING -p tcp --dport m4_getenv_req(PARTDB_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(WIREGUARD_NATHAN_IP)
 
 # Critical postrouting rule: Masquerade traffic heading through Wireguard
--A POSTROUTING -d m4_getenv_req(WIREGUARD_SERVER_IP) -j MASQUERADE
+-A POSTROUTING -d m4_getenv_req(WIREGUARD_NATHAN_IP) -j MASQUERADE
 COMMIT

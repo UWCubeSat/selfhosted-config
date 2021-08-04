@@ -107,9 +107,9 @@
       <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
-    <interface type='network'>
+    <interface type='bridge'>
       <mac address='m4_getenv_req(VIRT_PARTDB_MAC)'/>
-      <source network='hsl'/>
+      <source bridge='hslbr'/>
       <model type='virtio'/>
       <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
