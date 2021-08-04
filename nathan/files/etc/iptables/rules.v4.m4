@@ -27,7 +27,9 @@
 -A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 # Ports open on host
--A INPUT -p tcp --dport m4_getenv_req(HOST_SSH_PORT) -j ACCEPT
+# SSH
+-A INPUT -p tcp --dport 22 -j ACCEPT
+# Minecraft
 -A INPUT -p tcp --dport 25565 -j ACCEPT
 -A INPUT -p udp --dport 25565 -j ACCEPT
 COMMIT
@@ -38,31 +40,21 @@ COMMIT
 :POSTROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 
-# Root SSH port forwarding. Rather than modify SSH config, we let it listen on port 22 as normal,
-# and then redirect requests from the public port as necessary.
--A PREROUTING -p tcp --dport m4_getenv_req(HOST_SSH_PORT) -j REDIRECT --to-ports 22
-# To be safe until testing the above rule:
--A INPUT -p tcp --dport 22 -j ACCEPT
-
 ###########################################
 ## IF YOU'RE ADDING A NEW VM, LOOK HERE! ##
 ###########################################
 
 # SSH port forwarding to VMs:
--A PREROUTING -p tcp --dport m4_getenv_req(VIRT_JEVIN_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_JEVIN_IP):22
--A PREROUTING -p tcp --dport m4_getenv_req(VIRT_KAVEL_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_KAVEL_IP):22
--A PREROUTING -p tcp --dport m4_getenv_req(VIRT_PARTDB_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_PARTDB_IP):22
--A PREROUTING -p tcp --dport m4_getenv_req(VIRT_WIKI_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_WIKI_IP):22
+-A PREROUTING -p tcp --dport m4_getenv_req(JEVIN_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_JEVIN_IP):22
+-A PREROUTING -p tcp --dport m4_getenv_req(KAVEL_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_KAVEL_IP):22
+-A PREROUTING -p tcp --dport m4_getenv_req(PARTDB_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_PARTDB_IP):22
+-A PREROUTING -p tcp --dport m4_getenv_req(WIKI_PUBLIC_SSH_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_WIKI_IP):22
 
 # Wiki HTTP:
--A PREROUTING -p tcp --dport 8001 -j DNAT --to-destination m4_getenv_req(VIRT_WIKI_IP):80
+-A PREROUTING -p tcp --dport m4_getenv_req(WIKI_INTERMEDIATE_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_WIKI_IP):80
 
 # PartDB HTTP:
--A PREROUTING -p tcp --dport 8081 -j DNAT --to-destination m4_getenv_req(VIRT_PARTDB_IP):80
-
-# These two probably aren't necessary
--A POSTROUTING -s m4_getenv_req(VIRT_BASE_IP).0/24 -d 224.0.0.0/24 -j RETURN
--A POSTROUTING -s m4_getenv_req(VIRT_BASE_IP).0/24 -d 255.255.255.255/32 -j RETURN
+-A PREROUTING -p tcp --dport m4_getenv_req(PARTDB_INTERMEDIATE_PORT) -j DNAT --to-destination m4_getenv_req(VIRT_PARTDB_IP):80
 
 # Most important postrouting rule: Masquerade traffic leaving VMs as coming from the host
 -A POSTROUTING -s m4_getenv_req(VIRT_BASE_IP).0/24 ! -d m4_getenv_req(VIRT_BASE_IP).0/24 -j MASQUERADE
