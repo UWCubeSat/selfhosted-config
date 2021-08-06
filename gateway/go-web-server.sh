@@ -19,10 +19,8 @@ upload /etc/nginx/sites-enabled --delete
 upload /build/letsencrypt
 upload /etc/letsencrypt/renewal-hooks
 remotely systemctl stop nginx
-remotely make -C /build/letsencrypt \
-	 "LETSENCRYPT_CERT_NAME=hsl" \
-	 "LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL" \
-	 "LETSENCRYPT_DOMAINS=$DOMAIN_CURRENT $DOMAINS_OLD"
+remotely certbot certonly --non-interactive --agree-tos --standalone \
+	 --cert-name hsl -m "$LETSENCRYPT_EMAIL" -d $DOMAIN_CURRENT,${DOMAINS_OLD// /,}
 
 remotely systemctl start nginx
 remotely systemctl enable nginx
