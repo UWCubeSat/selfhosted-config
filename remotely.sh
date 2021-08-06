@@ -4,6 +4,10 @@
 # I release this script to the public domain. I'd appreciate it if you left this
 # message here, though.
 
+function remotely_no_escape {
+    ssh -S /tmp/%p-$$.sock $REMOTELY_SSH_OPTIONS "$REMOTELY_HOST" "$@"
+}
+
 function remotely {
     echo "REMOTELY: $*"
     # SSH passes its arguments to a shell, so we need to handle splitting stuff carefully. SSH takes
@@ -18,7 +22,7 @@ function remotely {
 	arg=${arg//\$/\\\$}
 	ssh_command+=" \"$arg\""
     done
-    ssh -S /tmp/%p-$$.sock "$REMOTELY_HOST" "$ssh_command"
+    remotely_no_escape "$ssh_command"
 }
 
 # args: source, destination, extra rsync args
@@ -28,7 +32,7 @@ function ez_rsync_up {
     local remote_path=$2
     shift 2
     # CUSTOMIZE: Rsync upload default options
-    rsync -Rrtp --exclude='*.m4' --exclude '*~' --info=progress2 "$@" "$local_path" "$REMOTELY_HOST:$remote_path"
+    rsync -Rrtp --info=progress2 "$@" "$local_path" "$REMOTELY_HOST:$remote_path"
 }
 
 # args: rsync args. This function exists only for customization
@@ -93,8 +97,9 @@ function ssh_connect {
     # TODO: support custom port and/or SSH config file
     env_req REMOTELY_HOST
     echo "Establishing SSH connection to $REMOTELY_HOST"
-    ssh -oControlMaster=yes -oControlPersist=${REMOTELY_CONNECTION_TIMEOUT:-200} -oControlPath=/tmp/%p-$$.sock "$REMOTELY_HOST" exit
-    export RSYNC_RSH="ssh -S /tmp/%p-$$.sock"
+    ssh -oControlMaster=yes -oControlPersist=${REMOTELY_CONNECTION_TIMEOUT:-200} -oControlPath=/tmp/%p-$$.sock \
+	$REMOTELY_SSH_OPTIONS "$REMOTELY_HOST" exit
+    export RSYNC_RSH="ssh -S /tmp/%p-$$.sock $REMOTELY_SSH_OPTIONS"
 }
 
 function process_m4_templates {
