@@ -21,6 +21,8 @@ server {
 	gzip_types application/javascript text/css;
 	gzip_proxied expired no-cache no-store private;
 
+	client_max_body_size 128M;
+
 	location /wiki {
 		include proxy_params;
 		proxy_pass http://m4_getenv_req(WIREGUARD_NATHAN_IP):m4_getenv_req(WIKI_INTERMEDIATE_PORT);
