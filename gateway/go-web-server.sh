@@ -14,7 +14,8 @@ env_req DOMAINS_OLD
 remotely apt-get install -y rsync nginx certbot
 
 upload /etc/nginx/custom
-upload /etc/nginx/sites-enabled --delete
+upload /etc/nginx/sites-enabled --delete --exclude '*.m4'
+remotely nginx -t
 
 upload /build/letsencrypt
 upload /etc/letsencrypt/renewal-hooks

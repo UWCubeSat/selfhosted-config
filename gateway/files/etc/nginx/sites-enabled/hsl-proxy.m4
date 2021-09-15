@@ -24,12 +24,13 @@ server {
 	client_max_body_size 128M;
 
 	location /wiki {
-		include proxy_params;
+		include custom/proxy_params;
 		proxy_pass http://m4_getenv_req(WIREGUARD_NATHAN_IP):m4_getenv_req(WIKI_INTERMEDIATE_PORT);
 	}
 
 	location /partdb {
-		include proxy_params;
+		include custom/proxy_params;
+		proxy_redirect http://$host https://$host;
 		proxy_pass http://m4_getenv_req(WIREGUARD_NATHAN_IP):m4_getenv_req(PARTDB_INTERMEDIATE_PORT);
 	}
 
