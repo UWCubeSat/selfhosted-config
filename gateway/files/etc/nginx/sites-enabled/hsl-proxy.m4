@@ -38,10 +38,9 @@ server {
 		proxy_pass http://m4_getenv_req(WIREGUARD_NATHAN_IP):m4_getenv_req(KEYCLOAK_PORT)/auth;
 	}
 
-	location /slack-history {
+	location /slack-history/ {
 		include custom/proxy_params;
 		proxy_pass http://m4_getenv_req(WIREGUARD_NATHAN_IP):m4_getenv_req(SLACK_EXPORT_VIEWER_PORT)/;
-		proxy_redirect default;
 		sub_filter_last_modified on;
 		sub_filter_once off;
 		sub_filter 'href="/' 'href="/slack-history/';
