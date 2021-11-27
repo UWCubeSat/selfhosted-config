@@ -38,7 +38,7 @@ function ez_rsync_up {
 # args: rsync args. This function exists only for customization
 function ez_rsync_down {
     # CUSTOMIZE: Rsync download default options
-    rsync -rtp --info=progress2 "$@"
+    rsync -rtpL --info=progress2 "$@"
 }
 
 function upload {

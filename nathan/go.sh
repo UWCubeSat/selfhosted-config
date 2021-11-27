@@ -9,6 +9,7 @@ remotely_go
 
 source go-networking.sh
 source go-virt.sh
+source go-sso.sh
 # source go-minecraft.sh
 
 echo

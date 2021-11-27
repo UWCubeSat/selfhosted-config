@@ -47,8 +47,8 @@ other manner of funny business!
   (the latter throws an error if the environment variable is empty/undefined).
 * How do I create a new virtual machine?
   1. Create the VM on the server using your preferred method, which for me is ~virt-manager~, but
-     for you may be plain ~virsh~ if you're hardcore. Whichever method you choose, /make sure to
-     select the ~hsl~ network/, not the ~default~ network nor a bridge.
+     for you may be plain ~virsh~ if you're hardcore. At the last step, make sure to open "network
+     selection", then set "bridge device" and "hslbr"
   2. Run ~virsh dumpxml vm-name > vm-name.xml~ to create the XML dump. Remove parts that seem
      overly specific to the server hardware. Things I do in particular include:
      + Removing the ~<cpu>~ section.

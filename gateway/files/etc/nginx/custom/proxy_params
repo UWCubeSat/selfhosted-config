@@ -1,0 +1,9 @@
+proxy_set_header Host $http_host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+# Apache and/or php presumably uses the Host header to decide where to redirect requests, but still
+# thinks they're http. As a result, it bypasses nginx's default reverse proxy 301 Location
+# rewriting, which assumes that the proxied server is naïve enough to just redirect to the same host
+# that you wrote in proxy_pass. Workaround below:
+proxy_redirect http://$host https://$host;

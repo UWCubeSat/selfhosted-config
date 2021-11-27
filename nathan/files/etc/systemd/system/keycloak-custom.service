@@ -1,0 +1,11 @@
+[Unit]
+Description=Keycloak identity server
+After=network.target
+
+[Service]
+User=keycloak
+Type=simple
+ExecStart=/home/keycloak/keycloak-active/bin/standalone.sh -c ../../../configuration-standalone.xml
+
+[Install]
+WantedBy=multi-user.target

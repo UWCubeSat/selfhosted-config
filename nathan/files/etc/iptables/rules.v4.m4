@@ -29,6 +29,8 @@
 # Ports open on host
 # SSH
 -A INPUT -p tcp --dport 22 -j ACCEPT
+# Keycloak
+-A INPUT -p tcp --dport m4_getenv_req(KEYCLOAK_PORT) -j ACCEPT
 # Minecraft
 -A INPUT -p tcp --dport 25565 -j ACCEPT
 -A INPUT -p udp --dport 25565 -j ACCEPT
