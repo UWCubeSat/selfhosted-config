@@ -7,7 +7,7 @@ echo
 source remotely.sh
 remotely_go
 
-remotely apt-get install -y rsync wireguard bridge-utils
+remotely apt-get install -y rsync wireguard bridge-utils fail2ban
 
 upload /etc/wireguard -p --chmod 600
 upload /etc/iptables
@@ -23,6 +23,8 @@ remotely systemctl daemon-reload
 remotely systemctl reload wg-quick@wg0 || true
 remotely systemctl start wg-quick@wg0 iptables-custom
 remotely systemctl enable wg-quick@wg0 iptables-custom
+remotely systemctl start fail2ban
+remotely systemctl enable fail2ban
 
 echo
 echo 'DONE with networking'
