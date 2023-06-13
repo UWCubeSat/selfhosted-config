@@ -20,3 +20,4 @@ source remotely.sh
 remotely_go
 
 ez_rsync_up "$1" /home/slack/latest-export.zip --no-relative
+remotely systemctl restart slack-export-viewer-custom

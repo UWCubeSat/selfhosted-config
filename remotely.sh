@@ -4,6 +4,8 @@
 # I release this script to the public domain. I'd appreciate it if you left this
 # message here, though.
 
+# TODO: cancel the whole script when a remotely command fails.
+
 function remotely_no_escape {
     ssh -S /tmp/%p-$$.sock $REMOTELY_SSH_OPTIONS "$REMOTELY_HOST" "$@"
 }

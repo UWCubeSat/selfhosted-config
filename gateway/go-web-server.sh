@@ -19,7 +19,7 @@ remotely nginx -t
 upload /etc/letsencrypt/renewal-hooks
 remotely systemctl stop nginx
 remotely certbot certonly --non-interactive --agree-tos --standalone \
-	 --cert-name hsl -m "$LETSENCRYPT_EMAIL" -d ${DOMAINS_OLD// /,},$WIKI_DOMAIN,$PARTDB_DOMAIN,$MISC_DOMAIN
+	 --cert-name hsl -m "$LETSENCRYPT_EMAIL" -d ${DOMAINS_OLD// /,},$WIKI_DOMAIN,$PARTDB_DOMAIN,$LOST_DOMAIN,$MISC_DOMAIN
 
 remotely systemctl start nginx
 remotely systemctl enable nginx

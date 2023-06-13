@@ -88,3 +88,19 @@ server {
 		sub_filter 'href="/' 'href="/m4_getenv_req(SLACK_PATH)/';
 	}
 }
+
+server {
+	listen 443 ssl http2;
+	server_name m4_getenv_req(LOST_DOMAIN);
+
+	gzip on;
+	gzip_types application/javascript text/css;
+	gzip_proxied expired no-cache no-store private;
+
+	include custom/ssl_params;
+
+	location / {
+		 include custom/proxy_params;
+		 proxy_pass http://127.0.0.1:m4_getenv_req(LOST_WEB_PORT)/;
+	 }
+}
